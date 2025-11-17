@@ -483,76 +483,88 @@ function App() {
   const activeTemperatureDisplay = typeof currentTemperature === 'number' ? currentTemperature : null;
 
   return (
-    <div className="bg-gray-800 flex items-center justify-center min-h-screen p-4 font-inter">
-      <div className="w-[800px] h-[600px] bg-gray-900 rounded-lg shadow-2xl overflow-hidden border border-gray-700 flex flex-col">
-        <TitleBar />
-        <div className="flex flex-1 overflow-hidden">
-          <LocationSidebar
-            locations={locations}
-            activeLocationId={selectedLocation.id}
-            onSelectLocation={handleSelectLocation}
-            onSearchSubmit={handleSearchSubmit}
-            onDeleteLocation={handleDeleteLocation}
-            lastUpdatedLabel={lastUpdatedLabel}
-            onRefresh={() => fetchWeather(selectedLocation.query)}
-            isRefreshing={isLoading}
-            activeTemperatureDisplay={activeTemperatureDisplay}
-          />
-          <main className="flex-1 bg-gradient-to-b from-blue-900 to-indigo-900 overflow-y-auto">
-            <div className="p-6 space-y-4">
-              <div className="flex justify-between items-center">
-                <div>
-                  <h1 className="text-white text-2xl font-semibold">{selectedLocation.label || weatherData.location?.name}</h1>
-                  <p className="text-blue-200 text-sm">
-                    {dateLabel}
-                    {timeLabel ? ` • ${timeLabel}` : ''}
-                  </p>
+    <div className="bg-gray-800 min-h-screen flex flex-col font-inter">
+      <div className="bg-yellow-100 text-yellow-900 text-xs sm:text-sm text-center py-2 px-4 shadow-sm">
+        <a
+          href="https://weatherstack.com/"
+          target="_blank"
+          rel="noreferrer"
+          className="font-medium hover:text-yellow-800 transition-colors"
+        >
+          This app is built using the Weatherstack API.
+        </a>
+      </div>
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="w-[800px] h-[600px] bg-gray-900 rounded-lg shadow-2xl overflow-hidden border border-gray-700 flex flex-col">
+          <TitleBar />
+          <div className="flex flex-1 overflow-hidden">
+            <LocationSidebar
+              locations={locations}
+              activeLocationId={selectedLocation.id}
+              onSelectLocation={handleSelectLocation}
+              onSearchSubmit={handleSearchSubmit}
+              onDeleteLocation={handleDeleteLocation}
+              lastUpdatedLabel={lastUpdatedLabel}
+              onRefresh={() => fetchWeather(selectedLocation.query)}
+              isRefreshing={isLoading}
+              activeTemperatureDisplay={activeTemperatureDisplay}
+            />
+            <main className="flex-1 bg-gradient-to-b from-blue-900 to-indigo-900 overflow-y-auto">
+              <div className="p-6 space-y-4">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h1 className="text-white text-2xl font-semibold">{selectedLocation.label || weatherData.location?.name}</h1>
+                    <p className="text-blue-200 text-sm">
+                      {dateLabel}
+                      {timeLabel ? ` • ${timeLabel}` : ''}
+                    </p>
+                  </div>
+                  <div className="flex space-x-2">
+                    {['f', 'c'].map((unit) => (
+                      <button
+                        key={unit}
+                        type="button"
+                        onClick={() => setUnits(unit)}
+                        className={`px-3 py-1 text-sm rounded-md ${
+                          units === unit ? 'bg-white/20 text-white' : 'bg-white/10 text-white/80 hover:bg-white/20'
+                        }`}
+                      >
+                        °{unit.toUpperCase()}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="flex space-x-2">
-                  {['f', 'c'].map((unit) => (
-                    <button
-                      key={unit}
-                      type="button"
-                      onClick={() => setUnits(unit)}
-                      className={`px-3 py-1 text-sm rounded-md ${
-                        units === unit ? 'bg-white/20 text-white' : 'bg-white/10 text-white/80 hover:bg-white/20'
-                      }`}
-                    >
-                      °{unit.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-              </div>
 
-              {error && (
-                <div className="bg-yellow-500/20 border border-yellow-500/40 text-yellow-100 text-sm rounded-md px-3 py-2">
-                  {error}
-                </div>
-              )}
+                {error && (
+                  <div className="bg-yellow-500/20 border border-yellow-500/40 text-yellow-100 text-sm rounded-md px-3 py-2">
+                    {error}
+                  </div>
+                )}
 
-              <CurrentWeatherCard
-                iconUrl={current.weather_icons?.[0]}
-                temperature={currentTemperature}
-                unitLabel={units}
-                description={current.weather_descriptions?.[0]}
-                feelsLike={feelsLike}
-                metrics={currentMetrics}
-              />
-
-              <ForecastStrip days={forecastDays} isSample={isForecastSample} />
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <AirQualityCard
-                  indexValue={airQuality['us-epa-index']}
-                  statusLabel={determineAirQualityStatus(Number(airQuality['us-epa-index']))}
-                  metricBreakdown={airQualityRows}
+                <CurrentWeatherCard
+                  iconUrl={current.weather_icons?.[0]}
+                  temperature={currentTemperature}
+                  unitLabel={units}
+                  description={current.weather_descriptions?.[0]}
+                  feelsLike={feelsLike}
+                  metrics={currentMetrics}
                 />
-                <WeatherDetailsCard rows={weatherDetails} />
+
+                <ForecastStrip days={forecastDays} isSample={isForecastSample} />
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                  <AirQualityCard
+                    indexValue={airQuality['us-epa-index']}
+                    statusLabel={determineAirQualityStatus(Number(airQuality['us-epa-index']))}
+                    metricBreakdown={airQualityRows}
+                  />
+                  <WeatherDetailsCard rows={weatherDetails} />
+                </div>
               </div>
-            </div>
-          </main>
+            </main>
+          </div>
+          <StatusBar providerLabel={providerMessage} isOnline={!isSampleData} statusDetail={statusDetail} />
         </div>
-        <StatusBar providerLabel={providerMessage} isOnline={!isSampleData} statusDetail={statusDetail} />
       </div>
     </div>
   );

@@ -20,5 +20,5 @@ world-weather/
 
 ## Documentation
 
-- Frontend details: see `frontend/README.md`
-- Backend details: see `backend/README.md`
+- Frontend details: see [frontend/README.md](frontend/README.md)
+- Backend details: see [backend/README.md](backend/README.md)

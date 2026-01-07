@@ -1,5 +1,7 @@
 # World Weather Dashboard
 
+![World Weather Dashboard screenshot](./screenshot.jpg)
+
 Full-stack Weatherstack client with a React + Vite frontend and an Express proxy backend. The app keeps the Weatherstack API key on the server while delivering a rich dashboard for multiple locations, current conditions, 5-day forecasts, air quality, and detailed metrics.
 
 ## Get Started
